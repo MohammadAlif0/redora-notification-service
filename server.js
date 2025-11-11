@@ -17,7 +17,15 @@ const app = express();
 app.use(express.json());
 
 // Initialize Firebase Admin SDK
-const serviceAccount = require('./firebase-service-account.json');
+// Load from environment variable or file
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+  // Running on cloud - load from env variable
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+} else {
+  // Running locally - load from file
+  serviceAccount = require('./firebase-service-account.json');
+}
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
